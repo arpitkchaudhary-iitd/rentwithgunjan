@@ -42,9 +42,10 @@ export async function POST(request: Request) {
             product_data: {
               name: `${booking.vehicle.name} — ${rentalDays}-day rental`,
               description: `Pickup ${pickup} · Return ${returnDay} · Includes NJ sales tax`,
-              images: booking.vehicle.imageUrl
-                ? [`${BASE_URL}${booking.vehicle.imageUrl}`]
-                : [],
+              // Only pass images when on a real public HTTPS URL (not localhost/SVG)
+              ...(booking.vehicle.imageUrl && BASE_URL.startsWith('https')
+                ? { images: [`${BASE_URL}${booking.vehicle.imageUrl}`] }
+                : {}),
             },
             unit_amount: booking.subtotal + booking.tax,
           },
