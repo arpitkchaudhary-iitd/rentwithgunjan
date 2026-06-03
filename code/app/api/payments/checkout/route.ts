@@ -25,6 +25,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Booking is not in a payable state.' }, { status: 409 });
     }
 
+    const pickup = booking.pickupDate.toISOString().slice(0, 10);
+    const returnDay = booking.returnDate.toISOString().slice(0, 10);
     const rentalDays = Math.max(
       1,
       Math.ceil((booking.returnDate.getTime() - booking.pickupDate.getTime()) / (1000 * 60 * 60 * 24)),
@@ -38,8 +40,11 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${booking.vehicle.name} rental`,
-              description: `${rentalDays} day(s) · ${booking.pickupDate.toISOString().slice(0, 10)} → ${booking.returnDate.toISOString().slice(0, 10)}`,
+              name: `${booking.vehicle.name} — ${rentalDays}-day rental`,
+              description: `Pickup ${pickup} · Return ${returnDay} · Includes NJ sales tax`,
+              images: booking.vehicle.imageUrl
+                ? [`${BASE_URL}${booking.vehicle.imageUrl}`]
+                : [],
             },
             unit_amount: booking.subtotal + booking.tax,
           },
@@ -49,20 +54,27 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'Security deposit (refundable)',
+              name: 'Security deposit (fully refundable)',
+              description: 'Returned within 5 business days after vehicle is returned in good condition.',
             },
             unit_amount: booking.deposit,
           },
           quantity: 1,
         },
       ],
+      payment_intent_data: {
+        // Shows "RENTWITHGUNJAN" on customer bank statements
+        statement_descriptor_suffix: 'RENTWITHGUNJAN',
+        metadata: { bookingId: booking.id },
+      },
       metadata: { bookingId: booking.id },
-      success_url: `${BASE_URL}/booking/success?bookingId=${booking.id}`,
+      success_url: `${BASE_URL}/booking/success?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/booking`,
     });
 
     return NextResponse.json({ url: session.url });
-  } catch {
+  } catch (err) {
+    console.error('[checkout]', err);
     return NextResponse.json({ error: 'Unable to create checkout session.' }, { status: 500 });
   }
 }
