@@ -21,6 +21,13 @@ export default function Home() {
             </article>
           ))}
         </div>
+
+        <a
+          href="/booking"
+          className="inline-flex w-fit items-center rounded-full bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-400/20 transition hover:bg-cyan-300"
+        >
+          Open the reservation prototype
+        </a>
       </section>
     </main>
   );

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" fill="none">
+  <rect width="800" height="500" rx="36" fill="#111827"/>
+  <rect x="40" y="40" width="720" height="420" rx="28" fill="url(#g)"/>
+  <path d="M170 340C220 250 300 200 400 200C500 200 580 250 630 340" stroke="#BFDBFE" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="250" cy="340" r="54" fill="#0B1120" stroke="#EFF6FF" stroke-width="10"/>
+  <circle cx="550" cy="340" r="54" fill="#0B1120" stroke="#EFF6FF" stroke-width="10"/>
+  <text x="120" y="130" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700">Model X1</text>
+  <text x="120" y="182" fill="#CBD5E1" font-family="Arial, Helvetica, sans-serif" font-size="24">Upload your real photo here.</text>
+  <defs>
+    <linearGradient id="g" x1="80" y1="70" x2="720" y2="430" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#172554"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+</svg>

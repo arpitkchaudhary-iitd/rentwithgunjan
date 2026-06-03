@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Verify build",
+			"type": "shell",
+			"command": "npm run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Verify build",
+			"type": "shell",
+			"command": "& 'C:\\Program Files\\nodejs\\npm.cmd' run build",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Verify build",
+			"type": "shell",
+			"command": "cmd /d /c \"\"C:\\Program Files\\nodejs\\npm.cmd\" run build\"",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
+		}
+	]
+}
