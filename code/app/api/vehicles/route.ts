@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
-import { SAMPLE_VEHICLES } from '../../../lib/booking';
+import { prisma } from '../../../lib/prisma';
 
 export async function GET() {
-  return NextResponse.json({ vehicles: SAMPLE_VEHICLES });
+  const vehicles = await prisma.vehicle.findMany({ where: { active: true }, orderBy: { name: 'asc' } });
+  return NextResponse.json({ vehicles });
 }
