@@ -24,7 +24,7 @@ export function middleware(req: NextRequest) {
 
   if (isAuthOnly && token) {
     const url = req.nextUrl.clone();
-    url.pathname = '/booking';
+    url.pathname = '/account';
     return NextResponse.redirect(url);
   }
 
