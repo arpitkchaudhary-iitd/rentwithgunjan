@@ -13,12 +13,24 @@ type VehicleOption = {
   estimate: { rentalDays: number; subtotal: number; tax: number; total: number; deposit: number };
 };
 
+function addDays(dateStr: string, days: number): string {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 export default function BookingPage() {
   const today = new Date().toISOString().slice(0, 10);
   const [pickupDate, setPickupDate] = useState(today);
-  const [returnDate, setReturnDate] = useState(
-    new Date(Date.now() + 1000 * 60 * 60 * 24 * 3).toISOString().slice(0, 10),
-  );
+  const [returnDate, setReturnDate] = useState(addDays(today, 3));
+
+  const handlePickupChange = (newPickup: string) => {
+    setPickupDate(newPickup);
+    // keep return date at least 1 day after pickup
+    if (returnDate <= newPickup) {
+      setReturnDate(addDays(newPickup, 1));
+    }
+  };
   const [vehicles, setVehicles] = useState<VehicleOption[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -103,7 +115,8 @@ export default function BookingPage() {
                 <input
                   type="date"
                   value={pickupDate}
-                  onChange={(e) => setPickupDate(e.target.value)}
+                  min={today}
+                  onChange={(e) => handlePickupChange(e.target.value)}
                   className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white"
                 />
               </label>
@@ -112,6 +125,7 @@ export default function BookingPage() {
                 <input
                   type="date"
                   value={returnDate}
+                  min={addDays(pickupDate, 1)}
                   onChange={(e) => setReturnDate(e.target.value)}
                   className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-white"
                 />
