@@ -2,14 +2,14 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Nav from '../../components/Nav';
 
 function SuccessContent() {
   const params = useSearchParams();
   const bookingId = params.get('bookingId');
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <section className="mx-auto flex max-w-2xl flex-col items-center gap-8 px-6 py-24 text-center lg:px-8">
+    <section className="mx-auto flex max-w-2xl flex-col items-center gap-8 px-6 py-24 text-center lg:px-8">
         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/20 text-4xl">
           ✓
         </div>
@@ -23,7 +23,8 @@ function SuccessContent() {
           </p>
         ) : null}
         <a
-          href="/account"
+          href="/account#bookings"
+          onClick={() => localStorage.setItem('accountTab', 'bookings')}
           className="mt-2 inline-flex rounded-full bg-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg hover:bg-cyan-300"
         >
           View my bookings
@@ -32,14 +33,16 @@ function SuccessContent() {
           Back to home
         </a>
       </section>
-    </main>
   );
 }
 
 export default function BookingSuccessPage() {
   return (
-    <Suspense>
-      <SuccessContent />
-    </Suspense>
+    <div className="min-h-screen bg-slate-950 text-white">
+      <Nav />
+      <Suspense>
+        <SuccessContent />
+      </Suspense>
+    </div>
   );
 }

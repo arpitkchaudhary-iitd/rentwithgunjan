@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Nav from '../components/Nav';
 
 type VehicleOption = {
   id: string;
@@ -79,15 +80,17 @@ export default function BookingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-slate-950 text-white">
+      <Nav />
+      <main>
       <section className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-16 lg:px-8">
         <header className="space-y-4">
-          <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">Booking flow</p>
+          <p className="text-sm uppercase tracking-[0.25em] text-cyan-300">Reserve a car</p>
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
-            Reserve a car in Hoboken in a few steps.
+            Pick your dates. We handle the rest.
           </h1>
           <p className="max-w-2xl text-slate-300">
-            Select your dates, pick a vehicle, and complete checkout securely via Stripe.
+            Select your dates, choose a vehicle, and pay securely via Stripe. Confirmation is instant.
           </p>
         </header>
 
@@ -211,6 +214,7 @@ export default function BookingPage() {
           </aside>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }
