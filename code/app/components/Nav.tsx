@@ -48,6 +48,7 @@ export default function Nav() {
         <div className="flex items-center gap-6">
           <a href="/" className="hidden text-sm text-slate-400 hover:text-white transition sm:block">Home</a>
           <a href="/booking" className="hidden text-sm text-slate-400 hover:text-white transition sm:block">Book a car</a>
+          <a href="/contact" className="hidden rounded-full border border-slate-700 px-4 py-1.5 text-sm text-slate-300 hover:border-cyan-400/60 hover:text-white transition sm:block">Contact us</a>
 
           {user ? (
             <div className="relative" ref={menuRef}>
