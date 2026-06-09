@@ -32,8 +32,17 @@ export default function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/90 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 lg:px-8">
-        <a href="/" className="text-lg font-bold tracking-tight text-white hover:text-cyan-300 transition">
-          rentwithgunjan
+        <a href="/" className="flex items-center gap-2 hover:opacity-90 transition">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="28" height="28" rx="8" fill="#22d3ee" fillOpacity="0.12" />
+            <path d="M5 19.5h18M7 19.5v-5a1 1 0 0 1 .18-.57l3-4.2A1 1 0 0 1 11 9.5h6a1 1 0 0 1 .82.43l3 4.2a1 1 0 0 1 .18.57v5" stroke="#22d3ee" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="10" cy="19.5" r="1.5" fill="#22d3ee"/>
+            <circle cx="18" cy="19.5" r="1.5" fill="#22d3ee"/>
+          </svg>
+          <span className="text-base font-semibold tracking-tight">
+            <span className="font-light text-slate-300">Rent With </span>
+            <span className="font-bold text-cyan-400">Gunjan</span>
+          </span>
         </a>
 
         <div className="flex items-center gap-6">
