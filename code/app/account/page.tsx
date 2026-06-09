@@ -35,13 +35,14 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
 }
 
-type Tab = 'profile' | 'security' | 'bookings';
+type PaymentMethod = { id: string; brand: string; last4: string; expMonth?: number; expYear?: number };
+type Tab = 'profile' | 'security' | 'bookings' | 'payment';
 
 function AccountContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as Tab) ?? 'profile';
   const [tab, setTab] = useState<Tab>(
-    ['profile', 'security', 'bookings'].includes(initialTab) ? initialTab : 'profile',
+    ['profile', 'security', 'bookings', 'payment'].includes(initialTab) ? initialTab : 'profile',
   );
 
   // Profile state
@@ -63,6 +64,11 @@ function AccountContent() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [bookingsLoading, setBookingsLoading] = useState(false);
 
+  // Payment methods state
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [pmLoading, setPmLoading] = useState(false);
+  const [pmRemoving, setPmRemoving] = useState<string | null>(null);
+
   // Cancellation state
   const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [cancelPending, setCancelPending] = useState(false);
@@ -81,6 +87,27 @@ function AccountContent() {
       })
       .catch(() => null);
   }, []);
+
+  useEffect(() => {
+    if (tab !== 'payment') return;
+    setPmLoading(true);
+    fetch('/api/payments/methods')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setPaymentMethods(d?.paymentMethods ?? []))
+      .catch(() => null)
+      .finally(() => setPmLoading(false));
+  }, [tab]);
+
+  const removePaymentMethod = async (pmId: string) => {
+    setPmRemoving(pmId);
+    await fetch('/api/payments/methods', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentMethodId: pmId }),
+    });
+    setPaymentMethods((prev) => prev.filter((m) => m.id !== pmId));
+    setPmRemoving(null);
+  };
 
   useEffect(() => {
     if (tab !== 'bookings') return;
@@ -147,6 +174,7 @@ function AccountContent() {
     { id: 'profile', label: 'Profile' },
     { id: 'security', label: 'Security' },
     { id: 'bookings', label: 'My bookings' },
+    { id: 'payment', label: 'Saved cards' },
   ];
 
   return (
@@ -393,6 +421,59 @@ function AccountContent() {
             )}
           </div>
         )}
+        {/* Payment methods tab */}
+        {tab === 'payment' && (
+          <div className="space-y-4">
+            <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+              <h2 className="text-lg font-semibold">Saved cards</h2>
+              <p className="mt-1 text-sm text-slate-400">
+                Cards saved during checkout via Stripe. Your card details are stored securely by Stripe — we never see the full number.
+              </p>
+
+              <div className="mt-6 space-y-3">
+                {pmLoading ? (
+                  <p className="text-sm text-slate-400">Loading saved cards…</p>
+                ) : paymentMethods.length === 0 ? (
+                  <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6 text-center">
+                    <p className="text-slate-400 text-sm">No saved cards yet.</p>
+                    <p className="mt-2 text-xs text-slate-500">
+                      Next time you check out, check "Save my payment info" on the Stripe page to save your card here.
+                    </p>
+                    <a href="/booking" className="mt-4 inline-flex rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-cyan-300 transition">
+                      Book a car
+                    </a>
+                  </div>
+                ) : (
+                  paymentMethods.map((pm) => (
+                    <div key={pm.id} className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-950 px-5 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-10 w-14 items-center justify-center rounded-lg border border-slate-700 bg-slate-900 text-xs font-bold uppercase text-slate-300">
+                          {pm.brand}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">•••• •••• •••• {pm.last4}</p>
+                          {pm.expMonth && pm.expYear && (
+                            <p className="text-xs text-slate-500">
+                              Expires {pm.expMonth.toString().padStart(2, '0')}/{pm.expYear}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removePaymentMethod(pm.id)}
+                        disabled={pmRemoving === pm.id}
+                        className="rounded-full border border-slate-700 px-4 py-1.5 text-xs text-slate-400 hover:border-rose-700 hover:text-rose-400 disabled:opacity-50 transition"
+                      >
+                        {pmRemoving === pm.id ? 'Removing…' : 'Remove'}
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

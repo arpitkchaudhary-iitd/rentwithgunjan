@@ -32,9 +32,25 @@ export async function POST(request: Request) {
       Math.ceil((booking.returnDate.getTime() - booking.pickupDate.getTime()) / (1000 * 60 * 60 * 24)),
     );
 
+    // Ensure the user has a Stripe Customer so cards can be saved
+    const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+    let stripeCustomerId = dbUser?.stripeCustomerId ?? null;
+    if (!stripeCustomerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        name: dbUser?.name ?? undefined,
+        metadata: { userId: user.id },
+      });
+      stripeCustomerId = customer.id;
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { stripeCustomerId },
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      customer_email: user.email,
+      customer: stripeCustomerId,
       line_items: [
         {
           price_data: {
@@ -64,9 +80,9 @@ export async function POST(request: Request) {
         },
       ],
       payment_intent_data: {
-        // Shows "RENTWITHGUNJAN" on customer bank statements
         statement_descriptor_suffix: 'RENTWITHGUNJAN',
         metadata: { bookingId: booking.id },
+        setup_future_usage: 'on_session',
       },
       metadata: { bookingId: booking.id },
       success_url: `${BASE_URL}/booking/success?bookingId=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,

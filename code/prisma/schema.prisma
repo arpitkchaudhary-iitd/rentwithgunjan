@@ -29,6 +29,8 @@ model User {
   propertyTypeInterest  String? // "condo" | "house" | "apartment" | "commercial"
   householdStatus       String? // "renting" | "owns" | "looking-to-buy"
 
+  stripeCustomerId String?
+
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   bookings      Booking[]

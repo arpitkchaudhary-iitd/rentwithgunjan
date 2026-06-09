@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PROTECTED = ['/booking', '/account', '/admin'];
+const PROTECTED = ['/account', '/admin'];
 const AUTH_ONLY = ['/login', '/signup'];
 
 function getSessionToken(req: NextRequest) {
@@ -32,5 +32,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/booking/:path*', '/account/:path*', '/admin/:path*', '/login', '/signup'],
+  matcher: ['/account/:path*', '/admin/:path*', '/login', '/signup'],
 };
