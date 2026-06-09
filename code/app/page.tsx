@@ -1,3 +1,4 @@
+import HeroActions from './components/HeroActions';
 import Nav from './components/Nav';
 
 export default function Home() {
@@ -15,16 +16,7 @@ export default function Home() {
           <p className="max-w-2xl text-lg text-slate-300">
             Choose from our fleet of three handpicked vehicles. Select your dates, pay securely with Stripe, and pick up your keys — it&apos;s that simple.
           </p>
-          <div className="flex flex-wrap gap-4">
-            <a href="/booking"
-              className="inline-flex items-center rounded-full bg-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-400/20 hover:bg-cyan-300 transition">
-              Check availability →
-            </a>
-            <a href="/signup"
-              className="inline-flex items-center rounded-full border border-slate-700 px-6 py-3 text-sm font-semibold text-white hover:border-slate-500 transition">
-              Create an account
-            </a>
-          </div>
+          <HeroActions />
         </section>
 
         {/* Features */}
