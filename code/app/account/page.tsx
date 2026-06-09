@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Nav from '../components/Nav';
 
 type Profile = {
@@ -35,8 +36,12 @@ function fmtDate(iso: string) {
 
 type Tab = 'profile' | 'security' | 'bookings';
 
-export default function AccountPage() {
-  const [tab, setTab] = useState<Tab>('profile');
+function AccountContent() {
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get('tab') as Tab) ?? 'profile';
+  const [tab, setTab] = useState<Tab>(
+    ['profile', 'security', 'bookings'].includes(initialTab) ? initialTab : 'profile',
+  );
 
   // Profile state
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -285,5 +290,13 @@ export default function AccountPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense>
+      <AccountContent />
+    </Suspense>
   );
 }
